@@ -298,7 +298,7 @@ Versione SO:                      10.0.20348 Build 20348
 Produttore SO:                    Microsoft Corporation
 Configurazione SO:                Server membro
 Proprietario originale:           Utente
-Data di installazione:            15/09/2024, 09:30:00
+Data di installazione:            15/09/2025, 09:30:00
 Ora di avvio:                     29/04/2026, 08:00:00
 Produttore sistema:               VMware, Inc.
 Modello sistema:                  VMware Virtual Platform
