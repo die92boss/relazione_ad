@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Windows PowerShell</title>
+	<link rel="icon" type="image/x-icon" href="favicon.ico" />
+	<link rel="stylesheet" href="style.css" />
+	<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+
+<body>
+	<div id="terminal">
+		<div id="output">
+			<div class="ps-header">
+				Windows PowerShell
+				Copyright (C) Microsoft Corporation. Tutti i diritti riservati.<br>
+				Prova la nuova versione multipiattaforma di PowerShell <a href="https://aka.ms/PSWindows" target="_blank">https://aka.ms/PSWindows</a><br>
+				Digita <span class="clickable-cmd" onclick="executeCommand('help')">'help'</span> per visualizzare i comandi disponibili.<br><br>
+			</div>
+		</div>
+		<div class="input-line">
+			<span class="prompt">PS C:\Relazione&gt; </span>
+			<input type="text" id="cmd-input" autocomplete="off" spellcheck="false" autofocus />
+		</div>
+	</div>
+
+	<!-- Contenuti Nascosti (Database) -->
+	<div id="content-database" style="display: none;">
+		<div id="content-help">
+<br>
+╔═════════════════════════════════════════════════════════════════╗
+║                                                                 ║
+║     R E L A Z I O N E  ·  A D  &  V M W A R E                   ║
+║     Sistema di Reportistica Tecnica                             ║
+║                                                                 ║
+╠═════════════════════════════════════════════════════════════════╣
+║   GUIDA                                                         ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('guide')">guide</span>            Apre la guida interattiva                   ║
+║                                                                 ║
+║   FILESYSTEM                                                    ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('dir')">dir</span>              Elenca file e cartelle                      ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('cd ..')">cd &lt;percorso&gt;</span>    Cambia directory (es: cd .., cd C:\)        ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('pwd')">pwd</span>              Mostra la directory corrente                ║
+║                                                                 ║
+║   SISTEMA                                                       ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('whoami')">whoami</span>           Utente corrente                             ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('hostname')">hostname</span>         Nome del computer                           ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('date')">date</span>             Data e ora corrente                         ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('ver')">ver</span>              Versione PowerShell                         ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('ipconfig')">ipconfig</span>         Configurazione di rete                      ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('systeminfo')">systeminfo</span>       Informazioni sul sistema                    ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('ping 192.168.1.1')">ping &lt;host&gt;</span>      Ping verso un host specifico                ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('echo Ciao!')">echo &lt;testo&gt;</span>     Stampa testo a schermo                      ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('history')">history</span>          Cronologia comandi eseguiti                 ║
+║                                                                 ║
+║   UTILITÀ                                                       ║ 
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('theme 1')">theme [1-4]</span>      Cambia colore del terminale                 ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('clear')">clear</span>            Pulisce lo schermo                          ║
+║  ▸ <span class="clickable-cmd" onclick="executeCommand('reset')">reset</span>            Riporta la console allo stato iniziale      ║
+║                                                                 ║
+╚═════════════════════════════════════════════════════════════════╝
+     ★ Clicca i comandi in giallo per eseguirli direttamente
+<br>
+		</div>
+	</div>
+
+	<!-- Guide Window -->
+	<div id="guide-window" style="display:none;">
+		<div class="gw-titlebar" id="gw-titlebar">
+			<div class="gw-title">
+				<i data-lucide="layout-dashboard" class="gw-title-icon"></i>
+				Relazione AD &amp; VMware
+			</div>
+			<div class="gw-controls">
+				<button class="gw-btn gw-min" id="gw-btn-min" title="Minimizza">&#xE921;</button>
+				<button class="gw-btn gw-max" id="gw-btn-max" title="Ingrandisci">&#xE922;</button>
+				<button class="gw-btn gw-close" id="gw-btn-close" title="Chiudi">&#xE8BB;</button>
+			</div>
+		</div>
+
+		<div class="gw-app-header">
+			<span class="gw-app-title">Relazione Tecnica</span>
+			<span class="gw-app-sub">Active Directory &amp; VMware Infrastructure</span>
+		</div>
+
+		<div class="gw-body">
+			<nav class="gw-sidebar">
+
+				<div class="gw-sidebar-group">Parte 1 &mdash; Teoria</div>
+				<div class="gw-nav active" data-sec="vmware">
+					<i data-lucide="layers" class="gw-nav-icon"></i>
+					<span>VMware vSphere</span>
+				</div>
+				<div class="gw-nav" data-sec="winserver">
+					<i data-lucide="server" class="gw-nav-icon"></i>
+					<span>Windows Server</span>
+				</div>
+
+				<div class="gw-sidebar-group">Parte 2 &mdash; Tutorial</div>
+				<div class="gw-nav" data-sec="createvm">
+					<i data-lucide="cpu" class="gw-nav-icon"></i>
+					<span>Creazione VM</span>
+				</div>
+				<div class="gw-nav" data-sec="installws">
+					<i data-lucide="hard-drive" class="gw-nav-icon"></i>
+					<span>Installazione WS</span>
+				</div>
+				<div class="gw-nav" data-sec="domain">
+					<i data-lucide="globe" class="gw-nav-icon"></i>
+					<span>Setup Dominio</span>
+				</div>
+				<div class="gw-nav" data-sec="groups">
+					<i data-lucide="users" class="gw-nav-icon"></i>
+					<span>Gruppi &amp; Utenti</span>
+				</div>
+				<div class="gw-nav" data-sec="perms">
+					<i data-lucide="shield" class="gw-nav-icon"></i>
+					<span>Autorizzazioni</span>
+				</div>
+
+			</nav>
+
+			<div class="gw-content">
+
+				<!-- ═══ 01 VMware & la Suite ═══ -->
+				<div id="gws-vmware" class="gw-section">
+					<h1 class="gws-title">VMware vSphere</h1>
+					<p class="gws-sub">La Piattaforma di Virtualizzazione Enterprise</p>
+					<hr class="gws-divider">
+
+					<h2 class="gws-heading">Cos'è VMware?</h2>
+					<p class="gws-text">VMware Inc., fondata nel 1998 e acquisita da Broadcom nel 2023, è la principale azienda al mondo nel settore della virtualizzazione e del cloud computing. Le sue tecnologie permettono di eseguire più sistemi operativi su un singolo server fisico, massimizzando l'utilizzo dell'hardware e riducendo i costi operativi.</p>
+
+					<h2 class="gws-heading">Hypervisor: Tipo 1 vs Tipo 2</h2>
+					<div class="gws-box">
+						<div class="gws-box-title">Confronto Hypervisor</div>
+						<ul class="gws-list">
+							<li><strong>Tipo 1 &mdash; Bare-Metal:</strong> installato direttamente sull'hardware fisico, senza sistema operativo intermedio. Massima efficienza e prestazioni. &rarr; <em>VMware ESXi, Microsoft Hyper-V, KVM</em></li>
+							<li><strong>Tipo 2 &mdash; Hosted:</strong> eseguito come applicazione su un sistema operativo host. Comodo per sviluppo e test su desktop. &rarr; <em>VMware Workstation, Oracle VirtualBox</em></li>
+						</ul>
+					</div>
+
+					<h2 class="gws-heading">La Suite VMware vSphere</h2>
+					<table class="gws-table">
+						<thead>
+							<tr><th>Prodotto</th><th>Funzione</th></tr>
+						</thead>
+						<tbody>
+							<tr><td><strong>VMware ESXi</strong></td><td>Hypervisor Tipo 1 &mdash; cuore della piattaforma vSphere. Si installa direttamente sul server fisico.</td></tr>
+							<tr><td><strong>vCenter Server</strong></td><td>Piattaforma di gestione centralizzata per più host ESXi. Abilita funzionalità avanzate come vMotion e HA.</td></tr>
+							<tr><td><strong>vSAN</strong></td><td>Storage definito dal software (Software-Defined Storage). Aggrega i dischi locali degli host in un cluster condiviso.</td></tr>
+							<tr><td><strong>NSX</strong></td><td>Rete e sicurezza definite dal software (SDN). Permette microsegmentazione e firewall distribuito.</td></tr>
+							<tr><td><strong>VMware Workstation</strong></td><td>Hypervisor Tipo 2 per desktop Windows/Linux. Ideale per sviluppo e testing.</td></tr>
+							<tr><td><strong>VMware Fusion</strong></td><td>Hypervisor Tipo 2 per macOS.</td></tr>
+						</tbody>
+					</table>
+
+					<h2 class="gws-heading">Caratteristiche Chiave di ESXi</h2>
+					<div class="gws-box">
+						<div class="gws-box-title">Vantaggi ESXi (Bare-Metal)</div>
+						<ul class="gws-list">
+							<li><strong>Efficienza:</strong> nessun overhead da un sistema operativo host, accesso diretto all'hardware</li>
+							<li><strong>Sicurezza:</strong> superficie di attacco minima, footprint ridottissimo (&lt;150 MB)</li>
+							<li><strong>Affidabilità:</strong> ottimizzato per carichi enterprise 24/7, supporto per vMotion (migrazione VM live)</li>
+							<li><strong>Isolamento:</strong> le VM sono completamente isolate l'una dall'altra</li>
+						</ul>
+					</div>
+				</div>
+
+				<!-- ═══ 02 Windows Server ═══ -->
+				<div id="gws-winserver" class="gw-section" style="display:none;">
+					<h1 class="gws-title">Windows Server</h1>
+					<p class="gws-sub">Il Sistema Operativo per Infrastrutture Aziendali</p>
+					<hr class="gws-divider">
+
+					<h2 class="gws-heading">Cos'è Windows Server?</h2>
+					<p class="gws-text">Windows Server è la linea di sistemi operativi Microsoft progettati per ambienti server aziendali. Offre servizi di rete, gestione centralizzata degli utenti, sicurezza avanzata e hosting di applicazioni. La versione corrente è <strong>Windows Server 2025</strong>, rilasciata nel 2024.</p>
+
+					<h2 class="gws-heading">Edizioni Disponibili</h2>
+					<div class="gws-box">
+						<div class="gws-box-title">Edizioni Windows Server 2022</div>
+						<ul class="gws-list">
+							<li><strong>Standard:</strong> per ambienti fisici o con virtualizzazione limitata &mdash; include licenze per 2 VM</li>
+							<li><strong>Datacenter:</strong> per ambienti altamente virtualizzati &mdash; VM illimitate, funzionalità avanzate (Storage Spaces Direct, SDN)</li>
+							<li><strong>Essentials:</strong> per piccole imprese (max 25 utenti, 50 dispositivi) &mdash; interfaccia semplificata</li>
+						</ul>
+					</div>
+
+					<h2 class="gws-heading">Ruoli Principali</h2>
+					<table class="gws-table">
+						<thead>
+							<tr><th>Ruolo</th><th>Funzione</th></tr>
+						</thead>
+						<tbody>
+							<tr><td><strong>AD DS</strong></td><td>Active Directory Domain Services &mdash; gestione centralizzata di utenti, computer, gruppi e criteri di gruppo (GPO)</td></tr>
+							<tr><td><strong>DNS Server</strong></td><td>Risoluzione dei nomi nel dominio. Indispensabile per il funzionamento di Active Directory</td></tr>
+							<tr><td><strong>DHCP Server</strong></td><td>Assegnazione automatica di indirizzi IP, subnet mask, gateway e DNS ai client</td></tr>
+							<tr><td><strong>File and Storage Services</strong></td><td>Condivisione file e cartelle in rete, gestione quote (FSRM), namespace distribuiti (DFS)</td></tr>
+							<tr><td><strong>Web Server (IIS)</strong></td><td>Hosting di applicazioni web e siti intranet aziendali</td></tr>
+							<tr><td><strong>Hyper-V</strong></td><td>Hypervisor integrato Microsoft &mdash; alternativa a VMware per la virtualizzazione</td></tr>
+							<tr><td><strong>Remote Desktop Services</strong></td><td>Accesso remoto centralizzato agli applicativi aziendali (VDI / Desktop remoto)</td></tr>
+							<tr><td><strong>AD CS</strong></td><td>Active Directory Certificate Services &mdash; infrastruttura PKI per certificati digitali interni</td></tr>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- ═══ 03 Creazione VM ═══ -->
+				<div id="gws-createvm" class="gw-section" style="display:none;">
+					<h1 class="gws-title">Creazione VM in VMware ESXi</h1>
+					<p class="gws-sub">Tutorial &mdash; Parte 1 &mdash; basato su Windows Server 2022</p>
+					<hr class="gws-divider">
+
+					<h2 class="gws-heading">Prerequisiti</h2>
+					<div class="gws-box">
+						<div class="gws-box-title">Cosa serve prima di iniziare</div>
+						<ul class="gws-list">
+							<li>Server fisico con VMware ESXi installato e un indirizzo IP assegnato</li>
+							<li>Accesso alla web UI di ESXi: <code>https://&lt;IP_server&gt;</code></li>
+							<li>File ISO di Windows Server 2022 (scaricabile da Microsoft Evaluation Center)</li>
+						</ul>
+					</div>
+
+					<h2 class="gws-heading">Step 1 &mdash; Caricare la ISO sul Datastore</h2>
+					<div class="gws-step">
+						<div class="gws-step-num">1</div>
+						<div>
+							<div class="gws-step-title">Aprire ESXi Web UI</div>
+							<div class="gws-step-desc">Navigare su <code>https://&lt;IP_ESXi&gt;</code> &rarr; accedere con <code>root</code> e la password configurata in fase di installazione.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">2</div>
+						<div>
+							<div class="gws-step-title">Aprire il Datastore Browser</div>
+							<div class="gws-step-desc">Navigator &rarr; <strong>Storage</strong> &rarr; <strong>datastore1</strong> &rarr; <strong>Datastore Browser</strong> &rarr; <strong>Upload</strong> &rarr; selezionare l'ISO di Windows Server 2022. Attendere il completamento.</div>
+						</div>
+					</div>
+
+					<h2 class="gws-heading">Step 2 &mdash; Creare la Macchina Virtuale</h2>
+					<div class="gws-step">
+						<div class="gws-step-num">3</div>
+						<div>
+							<div class="gws-step-title">Avviare la creazione</div>
+							<div class="gws-step-desc">Navigator &rarr; <strong>Virtual Machines</strong> &rarr; <strong>Create / Register VM</strong> &rarr; selezionare <em>"Create a new virtual machine"</em> &rarr; Next.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">4</div>
+						<div>
+							<div class="gws-step-title">Configurare nome e sistema operativo</div>
+							<div class="gws-step-desc">Nome: <code>WinServer2022-DC01</code> &mdash; Compatibility: ESXi 7.0 o superiore &mdash; Guest OS Family: Windows &mdash; Guest OS Version: <em>Windows Server 2022</em>.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">5</div>
+						<div>
+							<div class="gws-step-title">Selezionare il Datastore</div>
+							<div class="gws-step-desc">Selezionare il datastore disponibile con spazio sufficiente (minimo 60 GB liberi).</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">6</div>
+						<div>
+							<div class="gws-step-title">Configurare le risorse hardware</div>
+							<div class="gws-step-desc">
+								<ul class="gws-list" style="margin-top:6px;">
+									<li><strong>CPU:</strong> 2 vCPU (minimo) &mdash; 4 vCPU (raccomandato)</li>
+									<li><strong>RAM:</strong> 4 GB (minimo) &mdash; 8 GB (raccomandato)</li>
+									<li><strong>Disco:</strong> 60 GB, modalità <em>Thin Provisioned</em></li>
+									<li><strong>CD/DVD Drive:</strong> Datastore ISO &rarr; selezionare la ISO caricata al passo 2</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">7</div>
+						<div>
+							<div class="gws-step-title">Completare e avviare</div>
+							<div class="gws-step-desc"><strong>Finish</strong> &rarr; la VM è creata. Cliccare <strong>Power On</strong> per avviarla e procedere all'installazione.</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- ═══ 04 Installazione WS ═══ -->
+				<div id="gws-installws" class="gw-section" style="display:none;">
+					<h1 class="gws-title">Installazione Windows Server 2022</h1>
+					<p class="gws-sub">Tutorial &mdash; Parte 2 &mdash; la procedura è analoga per Windows Server 2025</p>
+					<hr class="gws-divider">
+
+					<h2 class="gws-heading">Installazione del Sistema Operativo</h2>
+					<div class="gws-step">
+						<div class="gws-step-num">1</div>
+						<div>
+							<div class="gws-step-title">Avviare dall'ISO</div>
+							<div class="gws-step-desc">Avviare la VM &rarr; premere un tasto quando appare il messaggio <em>"Press any key to boot from CD"</em>.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">2</div>
+						<div>
+							<div class="gws-step-title">Lingua e layout</div>
+							<div class="gws-step-desc">Selezionare la lingua, il formato ora (<em>Italiano</em>) e il layout tastiera (<em>Italiano</em>) &rarr; <strong>Next</strong> &rarr; <strong>Install now</strong>.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">3</div>
+						<div>
+							<div class="gws-step-title">Scegliere l'edizione</div>
+							<div class="gws-step-desc">Selezionare <em><strong>Windows Server 2022 Standard (Desktop Experience)</strong></em> &rarr; accettare i termini di licenza.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">4</div>
+						<div>
+							<div class="gws-step-title">Tipo di installazione</div>
+							<div class="gws-step-desc">Selezionare <em>"Custom: Install Windows only (advanced)"</em> &rarr; selezionare <strong>Drive 0</strong> &rarr; <strong>Next</strong>. L'installazione ha inizio; il server si riavvierà più volte.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">5</div>
+						<div>
+							<div class="gws-step-title">Impostare la password Administrator</div>
+							<div class="gws-step-desc">Al primo avvio, impostare una password complessa (8+ caratteri, maiuscole, numeri, simboli). Premere <strong>Ctrl+Alt+Canc</strong> per accedere.</div>
+						</div>
+					</div>
+
+					<h2 class="gws-heading">Configurazione Post-Installazione</h2>
+					<div class="gws-step">
+						<div class="gws-step-num">6</div>
+						<div>
+							<div class="gws-step-title">Rinominare il server</div>
+							<div class="gws-step-desc">Server Manager &rarr; <em>Local Server</em> &rarr; cliccare il nome del computer &rarr; <strong>Change</strong> &rarr; impostare il nome (es. <code>DC01</code>) &rarr; riavviare.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">7</div>
+						<div>
+							<div class="gws-step-title">Assegnare un IP statico</div>
+							<div class="gws-step-desc">
+								Pannello di controllo &rarr; Network Adapter &rarr; <em>Properties</em> &rarr; IPv4:
+								<ul class="gws-list" style="margin-top:6px;">
+									<li>IP Address: <code>192.168.1.10</code></li>
+									<li>Subnet Mask: <code>255.255.255.0</code></li>
+									<li>Default Gateway: <code>192.168.1.1</code></li>
+									<li>DNS Preferito: <code>127.0.0.1</code> (punta a se stesso dopo l'installazione di AD)</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- ═══ 05 Setup Dominio ═══ -->
+				<div id="gws-domain" class="gw-section" style="display:none;">
+					<h1 class="gws-title">Setup Dominio Active Directory</h1>
+					<p class="gws-sub">Tutorial &mdash; Parte 3</p>
+					<hr class="gws-divider">
+
+					<h2 class="gws-heading">Aggiunta Ruolo AD DS e DNS</h2>
+					<div class="gws-step">
+						<div class="gws-step-num">1</div>
+						<div>
+							<div class="gws-step-title">Aprire la procedura guidata</div>
+							<div class="gws-step-desc">Server Manager &rarr; <strong>Manage</strong> &rarr; <strong>Add Roles and Features</strong> &rarr; <em>Role-based or feature-based installation</em> &rarr; Next.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">2</div>
+						<div>
+							<div class="gws-step-title">Selezionare i ruoli</div>
+							<div class="gws-step-desc">Spuntare <strong>Active Directory Domain Services</strong> &rarr; <em>Add Features</em>. Spuntare anche <strong>DNS Server</strong> &rarr; Next &rarr; Next &rarr; <strong>Install</strong>. Attendere il completamento.</div>
+						</div>
+					</div>
+
+					<h2 class="gws-heading">Promozione a Domain Controller</h2>
+					<div class="gws-step">
+						<div class="gws-step-num">3</div>
+						<div>
+							<div class="gws-step-title">Avviare la promozione</div>
+							<div class="gws-step-desc">Cliccare la <strong>bandierina gialla</strong> in Server Manager &rarr; <em>"Promote this server to a domain controller"</em>.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">4</div>
+						<div>
+							<div class="gws-step-title">Creare una nuova foresta</div>
+							<div class="gws-step-desc">Selezionare <em>"Add a new forest"</em> &rarr; Root domain name: <code>azienda.local</code> (o il nome scelto) &rarr; Next.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">5</div>
+						<div>
+							<div class="gws-step-title">Impostare la password DSRM</div>
+							<div class="gws-step-desc">Forest/Domain functional level: <em>Windows Server 2016</em>. Impostare la <strong>DSRM password</strong> (usata in modalità ripristino directory). Next &rarr; Next &rarr; <strong>Install</strong>. Il server si riavvia automaticamente.</div>
+						</div>
+					</div>
+
+					<div class="gws-box" style="border-top-color: #2e79ba; margin-top: 20px;">
+						<div class="gws-box-title">Nota</div>
+						<ul class="gws-list">
+							<li>Dopo il riavvio, accedere con <code>AZIENDA\Administrator</code> (o il nome dominio scelto)</li>
+							<li>Il DNS Server viene configurato automaticamente con le zone del dominio</li>
+							<li>Verificare in Server Manager che entrambi i ruoli (AD DS, DNS) siano verdi</li>
+						</ul>
+					</div>
+				</div>
+
+				<!-- ═══ 06 Gruppi & Utenti ═══ -->
+				<div id="gws-groups" class="gw-section" style="display:none;">
+					<h1 class="gws-title">Gruppi &amp; Utenti</h1>
+					<p class="gws-sub">Tutorial &mdash; Parte 4 &mdash; Active Directory Users and Computers</p>
+					<hr class="gws-divider">
+
+					<h2 class="gws-heading">Aprire ADUC</h2>
+					<p class="gws-text">Server Manager &rarr; <strong>Tools</strong> &rarr; <strong>Active Directory Users and Computers</strong></p>
+
+					<h2 class="gws-heading">Creare Unità Organizzative (OU)</h2>
+					<p class="gws-text">Le OU sono contenitori logici per organizzare utenti, computer e gruppi nel dominio.</p>
+					<div class="gws-step">
+						<div class="gws-step-num">1</div>
+						<div>
+							<div class="gws-step-title">Creare la struttura OU</div>
+							<div class="gws-step-desc">Tasto destro sul dominio (es. <code>azienda.local</code>) &rarr; <strong>New</strong> &rarr; <strong>Organizational Unit</strong>. Creare ad esempio: <code>Dipendenti</code>, poi dentro: <code>IT</code>, <code>Marketing</code>, <code>Contabilità</code>.</div>
+						</div>
+					</div>
+
+					<h2 class="gws-heading">Creare Gruppi di Sicurezza</h2>
+					<div class="gws-step">
+						<div class="gws-step-num">2</div>
+						<div>
+							<div class="gws-step-title">Nuovo gruppo</div>
+							<div class="gws-step-desc">Dentro l'OU desiderata &rarr; tasto destro &rarr; <strong>New</strong> &rarr; <strong>Group</strong>. Impostare:
+								<ul class="gws-list" style="margin-top:6px;">
+									<li>Group name: es. <code>IT-Team</code></li>
+									<li>Group scope: <em>Global</em></li>
+									<li>Group type: <em>Security</em></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+					<h2 class="gws-heading">Creare Utenti</h2>
+					<div class="gws-step">
+						<div class="gws-step-num">3</div>
+						<div>
+							<div class="gws-step-title">Nuovo utente</div>
+							<div class="gws-step-desc">Dentro l'OU &rarr; tasto destro &rarr; <strong>New</strong> &rarr; <strong>User</strong>. Compilare nome, cognome e <em>User logon name</em> (es. <code>m.rossi</code>). Impostare password complessa.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">4</div>
+						<div>
+							<div class="gws-step-title">Aggiungere l'utente al gruppo</div>
+							<div class="gws-step-desc">Doppio clic sul gruppo <code>IT-Team</code> &rarr; tab <strong>Members</strong> &rarr; <strong>Add</strong> &rarr; digitare il nome utente &rarr; <strong>Check Names</strong> &rarr; OK.</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- ═══ 07 Autorizzazioni ═══ -->
+				<div id="gws-perms" class="gw-section" style="display:none;">
+					<h1 class="gws-title">Autorizzazioni Cartelle</h1>
+					<p class="gws-sub">Tutorial &mdash; Parte 5 &mdash; Permessi NTFS &amp; Condivisione</p>
+					<hr class="gws-divider">
+
+					<h2 class="gws-heading">Creare e Condividere una Cartella</h2>
+					<div class="gws-step">
+						<div class="gws-step-num">1</div>
+						<div>
+							<div class="gws-step-title">Creare la cartella</div>
+							<div class="gws-step-desc">Sul server DC01, creare la cartella: <code>C:\Condivise\IT</code></div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">2</div>
+						<div>
+							<div class="gws-step-title">Configurare la condivisione</div>
+							<div class="gws-step-desc">Tasto destro sulla cartella &rarr; <strong>Properties</strong> &rarr; tab <strong>Sharing</strong> &rarr; <strong>Advanced Sharing</strong> &rarr; spuntare <em>"Share this folder"</em> &rarr; nome condivisione: <code>IT</code>.</div>
+						</div>
+					</div>
+					<div class="gws-step">
+						<div class="gws-step-num">3</div>
+						<div>
+							<div class="gws-step-title">Permessi di condivisione</div>
+							<div class="gws-step-desc"><strong>Permissions</strong> &rarr; rimuovere <code>Everyone</code> &rarr; <strong>Add</strong> &rarr; aggiungere <code>IT-Team</code> &rarr; assegnare <em>Change (Modifica)</em>.</div>
+						</div>
+					</div>
+
+					<h2 class="gws-heading">Permessi NTFS (Sicurezza)</h2>
+					<div class="gws-step">
+						<div class="gws-step-num">4</div>
+						<div>
+							<div class="gws-step-title">Assegnare i permessi NTFS</div>
+							<div class="gws-step-desc">Properties &rarr; tab <strong>Security</strong> &rarr; <strong>Edit</strong> &rarr; <strong>Add</strong> &rarr; digitare <code>IT-Team</code> &rarr; Check Names &rarr; OK &rarr; assegnare <em>Modify</em>.</div>
+						</div>
+					</div>
+
+					<h2 class="gws-heading">Regola Fondamentale</h2>
+					<div class="gws-box" style="border-top-color: #e8a020;">
+						<div class="gws-box-title">Permesso Effettivo</div>
+						<p class="gws-text" style="margin-bottom:8px;">Il permesso effettivo su una risorsa di rete è sempre il <strong>più restrittivo</strong> tra il permesso di Condivisione e il permesso NTFS.</p>
+						<ul class="gws-list">
+							<li><strong>Esempio:</strong> Condivisione = Modifica, NTFS = Lettura &rarr; Permesso effettivo = <strong>Lettura</strong></li>
+						</ul>
+					</div>
+
+					<h2 class="gws-heading">Tabella Permessi NTFS</h2>
+					<table class="gws-table">
+						<thead>
+							<tr><th>Permesso</th><th>Operazioni Consentite</th></tr>
+						</thead>
+						<tbody>
+							<tr><td><span class="gws-badge blue">Controllo completo</span></td><td>Tutte le operazioni, inclusa la modifica dei permessi e l'ownership</td></tr>
+							<tr><td><span class="gws-badge blue">Modifica</span></td><td>Lettura, scrittura, eliminazione file e cartelle (senza modificare permessi)</td></tr>
+							<tr><td><span class="gws-badge green">Lettura ed esecuzione</span></td><td>Aprire, leggere ed eseguire file</td></tr>
+							<tr><td><span class="gws-badge green">Lettura</span></td><td>Solo visualizzazione del contenuto</td></tr>
+							<tr><td><span class="gws-badge yellow">Scrittura</span></td><td>Creare e modificare file (senza eliminare)</td></tr>
+						</tbody>
+					</table>
+				</div>
+
+			</div><!-- .gw-content -->
+		</div><!-- .gw-body -->
+
+		<div class="gw-statusbar">
+			<span id="gw-status">VMware vSphere</span>
+			<span>Relazione Tecnica &mdash; 2024</span>
+		</div>
+		<div id="gw-resize"></div>
+	</div><!-- #guide-window -->
+
+	<script src="script.js"></script>
+</body>
+
+</html>
