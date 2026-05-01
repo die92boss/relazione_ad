@@ -28,6 +28,10 @@ html {
 	word-wrap: break-word;
 }
 
+.ps-header {
+	margin-left: -200px;
+}
+
 .ps-header a {
 	color: inherit;
 	text-decoration: none;
