@@ -196,6 +196,10 @@ body.theme-4 .highlight {
 	color: #cdd8e0;
 }
 
+#guide-window.gw-animating {
+	transition: top 0.22s ease, left 0.22s ease, width 0.22s ease, height 0.22s ease;
+}
+
 /* Title bar — thin dark chrome like Win11 */
 .gw-titlebar {
 	height: 32px;
@@ -306,16 +310,31 @@ body.theme-4 .highlight {
 	border-radius: 0;
 }
 
-/* Minimized */
+/* Minimized — snaps to bottom-left taskbar entry */
+#guide-window.gw-minimized {
+	height: 32px !important;
+	width: 320px !important;
+	min-width: 0;
+	min-height: 0;
+	border-radius: 4px;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
 #guide-window.gw-minimized .gw-app-header,
 #guide-window.gw-minimized .gw-body,
-#guide-window.gw-minimized .gw-statusbar {
+#guide-window.gw-minimized .gw-statusbar,
+#guide-window.gw-minimized #gw-resize {
 	display: none !important;
 }
 
-#guide-window.gw-minimized {
-	height: auto !important;
-	min-height: 0;
+#guide-window.gw-minimized .gw-titlebar {
+	cursor: pointer;
+	border-radius: 4px;
+	background: #1e1e1e;
+}
+
+#guide-window.gw-minimized .gw-title {
+	color: #cccccc;
 }
 
 /* Body layout */

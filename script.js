@@ -316,23 +316,52 @@ Memoria fisica disponibile:       3.754 MB
 
     // --- Shell: ping ---
     if (cmd === 'ping') {
-        const target = argStr || '127.0.0.1';
+        const target = argStr || '';
+
+        const isValidIp = (s) => {
+            const parts = s.split('.');
+            return parts.length === 4 && parts.every(p => /^\d{1,3}$/.test(p) && +p <= 255);
+        };
+        const isValidHost = (s) => /^[a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?)+$/.test(s);
+
+        if (!target) {
+            printOutput(`<span class="error">Utilizzo: ping &lt;host&gt;\nEsempio: ping google.com  oppure  ping 192.168.1.1</span>\n\n`, true);
+            return;
+        }
+        if (!isValidIp(target) && !isValidHost(target)) {
+            printOutput(`<span class="error">Ping: impossibile trovare l'host '${target}'. Verificare il nome e riprovare.</span>\n\n`, true);
+            return;
+        }
+
         const ms = () => Math.floor(Math.random() * 6 + 10);
         const t = [ms(), ms(), ms(), ms()];
-        printOutput(
-`
-Esecuzione di Ping ${target} con 32 byte di dati:
-Risposta da ${target}: byte=32 durata=${t[0]}ms TTL=128
-Risposta da ${target}: byte=32 durata=${t[1]}ms TTL=128
-Risposta da ${target}: byte=32 durata=${t[2]}ms TTL=128
-Risposta da ${target}: byte=32 durata=${t[3]}ms TTL=128
 
+        printOutput(`\nEsecuzione di Ping ${target} con 32 byte di dati:\n`);
+        const inputLine = document.querySelector('.input-line');
+        inputLine.style.display = 'none';
+
+        t.forEach((ping, i) => {
+            setTimeout(() => {
+                printOutput(`Risposta da ${target}: byte=32 durata=${ping}ms TTL=128\n`);
+                scrollToBottom();
+
+                if (i === t.length - 1) {
+                    setTimeout(() => {
+                        printOutput(
+`
 Statistiche Ping per ${target}:
     Pacchetti: Inviati = 4, Ricevuti = 4, Persi = 0 (0% persi),
 Tempo approssimativo percorso andata/ritorno in millisecondi:
     Minimo = ${Math.min(...t)}ms, Massimo = ${Math.max(...t)}ms, Medio = ${Math.round(t.reduce((a, b) => a + b) / 4)}ms
 
 `);
+                        scrollToBottom();
+                        inputLine.style.display = '';
+                        inputField.focus();
+                    }, 400);
+                }
+            }, (i + 1) * 1000);
+        });
         return;
     }
 
@@ -402,7 +431,7 @@ if (window.lucide) lucide.createIcons();
 
     let isDragging = false, dragOX = 0, dragOY = 0;
     let isMaximized = false, isMinimized = false;
-    let savedLeft = '', savedTop = '';
+    let savedLeft = '', savedTop = '', savedWidth = '', savedHeight = '';
 
     function centerWindow() {
         win.style.transform = 'none';
@@ -422,35 +451,104 @@ if (window.lucide) lucide.createIcons();
         isMinimized = false;
     });
 
+    function snapInlineToRect() {
+        const r = win.getBoundingClientRect();
+        win.style.left   = r.left + 'px';
+        win.style.top    = r.top  + 'px';
+        win.style.width  = r.width  + 'px';
+        win.style.height = r.height + 'px';
+    }
+
+    function animate(fn) {
+        snapInlineToRect();
+        win.classList.remove('gw-maximized', 'gw-minimized');
+        win.offsetHeight; // force reflow so browser registers start state
+        win.classList.add('gw-animating');
+        fn();
+        win.addEventListener('transitionend', () => win.classList.remove('gw-animating'), { once: true });
+    }
+
+    function restoreFromMinimized() {
+        isMinimized = false;
+        if (isMaximized) {
+            isMaximized = false;
+            animate(() => {
+                win.style.left = ''; win.style.top = '';
+                win.style.width = ''; win.style.height = '';
+                win.classList.add('gw-maximized');
+                isMaximized = true;
+            });
+        } else {
+            const tl = savedLeft, tt = savedTop, tw = savedWidth, th = savedHeight;
+            animate(() => {
+                win.style.left   = tl;
+                win.style.top    = tt;
+                win.style.width  = tw;
+                win.style.height = th;
+            });
+        }
+    }
+
     document.getElementById('gw-btn-min').addEventListener('click', function () {
-        isMinimized = !isMinimized;
-        win.classList.toggle('gw-minimized', isMinimized);
+        if (isMinimized) {
+            restoreFromMinimized();
+        } else {
+            if (!isMaximized) {
+                savedLeft   = win.style.left;
+                savedTop    = win.style.top;
+                savedWidth  = win.style.width;
+                savedHeight = win.style.height;
+            }
+            isMinimized = true;
+            animate(() => {
+                win.classList.add('gw-minimized');
+                win.style.left   = '16px';
+                win.style.top    = (window.innerHeight - 32 - 16) + 'px';
+                win.style.width  = '';
+                win.style.height = '';
+            });
+        }
     });
 
-    document.getElementById('gw-btn-max').addEventListener('click', toggleMaximize);
+    titlebar.addEventListener('click', function (e) {
+        if (!isMinimized || e.target.classList.contains('gw-btn')) return;
+        restoreFromMinimized();
+    });
+
+    document.getElementById('gw-btn-max').addEventListener('click', function () {
+        if (isMinimized) { restoreFromMinimized(); return; }
+        toggleMaximize();
+    });
 
     titlebar.addEventListener('dblclick', function (e) {
-        if (e.target.classList.contains('gw-btn')) return;
+        if (isMinimized || e.target.classList.contains('gw-btn')) return;
         toggleMaximize();
     });
 
     function toggleMaximize() {
-        if (isMinimized) return;
         isMaximized = !isMaximized;
         if (isMaximized) {
             savedLeft = win.style.left;
             savedTop  = win.style.top;
-            win.classList.add('gw-maximized');
+            animate(() => {
+                win.style.left = ''; win.style.top = '';
+                win.style.width = ''; win.style.height = '';
+                win.classList.add('gw-maximized');
+            });
         } else {
-            win.classList.remove('gw-maximized');
-            win.style.left = savedLeft;
-            win.style.top  = savedTop;
+            const tl = savedLeft, tt = savedTop;
+            animate(() => {
+                win.style.left = tl;
+                win.style.top  = tt;
+                win.style.width  = '';
+                win.style.height = '';
+            });
         }
     }
 
     // Drag
     titlebar.addEventListener('mousedown', function (e) {
-        if (isMaximized || e.target.classList.contains('gw-btn')) return;
+        if (isMaximized || isMinimized || e.target.classList.contains('gw-btn')) return;
         isDragging = true;
         const r = win.getBoundingClientRect();
         dragOX = e.clientX - r.left;
